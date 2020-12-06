@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Globe</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        .dg.main {
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <script src="./fpsmeter.js"></script>
+    <script>
+        var meter = new FPSMeter(document.getElementById('meter'), {
+            graph: true,
+            left: 'auto',
+            right: '5px',
+            heat: true,
+            show: 'ms'
+        });
+    </script>
+    <script src="dist/vendors.bundle.js"></script>
+    <script src="dist/app.bundle.js"></script>
+</body>
+</html>
