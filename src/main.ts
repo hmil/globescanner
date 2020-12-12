@@ -14,7 +14,7 @@ document.body.appendChild(gui.domElement);
 let cubes: THREE.Mesh[] = [];
 let skybox: THREE.Mesh;
 
-const clock = new Clock(document.body);
+new Clock(document.body);
 
 function currentDay(date: Date) {
     const start = new Date(date.getFullYear(), 0, 0);
@@ -90,7 +90,7 @@ controls.maxDistance = 900;
 
 camera.position.z = 30;
 
-// makeCube({ latitude: 46.3119, longitude: 6.3801 }, 0xff0000);
+makeCube({ latitude: 46.3119, longitude: 6.3801 }, 0xff0000);
 
 const earth = createEarth();
 scene.add( earth );
@@ -109,12 +109,13 @@ animate();
 
 window.addEventListener('resize', onWindowResize, false);
 
-
-gui.addColor(guiControls, 'fog').onChange(updateFogColor);
-gui.add(halo, 'density', 0, 200);
-gui.add(halo, 'size', 0, 0.10);
-gui.add(guiControls, 'hour', 0, 24).onChange(() => setLight());
-gui.add(guiControls, 'day', 0, 365).onChange(() => setLight());
+const fogFolder = gui.addFolder('fog');
+fogFolder.addColor(guiControls, 'fog').onChange(updateFogColor);
+fogFolder.add(halo, 'density', 0, 200);
+fogFolder.add(halo, 'size', 0, 0.10);
+const sunFolder = gui.addFolder('sun');
+sunFolder.add(guiControls, 'hour', 0, 24).onChange(() => setLight());
+sunFolder.add(guiControls, 'day', 0, 365).onChange(() => setLight());
 gui.add(guiControls, 'showPlanes').onChange((value) => {
     if (value) {
         cubes.forEach(cube => { cube.layers.enable(1) });
@@ -131,10 +132,13 @@ function refreshPlanes() {
     fetchData().then(d => {
         trackers?.forEach(t => scene.remove(t));
         trackers = createTrackers(d, makeCube);
+        if (!guiControls.showPlanes) {
+            cubes.forEach(cube => { cube.layers.disable(1) });
+        }
     });
 }
 
-// window.setInterval(refreshPlanes, 30000);
+window.setInterval(refreshPlanes, 30000);
 refreshPlanes();
 
 function onWindowResize() {
